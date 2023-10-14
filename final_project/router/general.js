@@ -6,14 +6,34 @@ const public_users = express.Router();
 
 
 public_users.post("/register", (req,res) => {
+ 
+    const { username, password } = req.body;
+  
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Incomplete information' });
+    }
+  
+    const existingUser = users.find((user) => user.username === username);
+  
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+  
+    const newUser = { username, password };
+    users.push(newUser);
+    return res.status(201).json({ message: 'Added new user' }); 
+  });
 
-  return res.status(300).json({message: "Yet to be implemented"});
-});
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   res.json(books)
-  return res.status(300).json({message: "Yet to be implemented"});
+  
+});
+
+public_users.get('/users',function (req, res) {
+  res.json(users)
+
 });
 // Get book details based on isbn
 public_users.get('/isbn/:isbn', (req, res) => {

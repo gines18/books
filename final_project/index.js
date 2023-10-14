@@ -16,8 +16,11 @@ app.use(
     saveUninitialized: true,
   })
 );
+const authenticatedUser = (username,password)=>{ //returns boolean
+  return users.some(user => user.username === username && user.password === password);
+} 
 
-app.use("/customer/auth/*", function auth(req, res, next) {
+app.use("/customer/auth/*", function auth(req, res) {
   const username = req.body.username;
   const password = req.body.password;
 
@@ -47,7 +50,7 @@ app.use("/customer/auth/*", function auth(req, res, next) {
   }
 });
 
-const PORT = 5007;
+const PORT = 5008;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
