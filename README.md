@@ -40,7 +40,7 @@ Before you start, make sure you have the following:
 Enter npm start  -  to start the server 
 The server should now be running at http://localhost:5008
 
-API Endpoints
+## API Endpoints
 Testing with Postman
 Get all books: GET http://localhost:5008
 
