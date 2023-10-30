@@ -6,8 +6,7 @@ const crypto = require('crypto');
 
 let users = [
   {
-    "username": "John",
-    "password": "John1"
+ 
   }
 ];
 
@@ -32,20 +31,37 @@ regd_users.post("/login", (req, res) => {
     return res.status(400).json({ message: "Invalid username" });
   }
 
-  if (!authenticatedUser(username, password)) {
-    return res.status(401).json({ message: "Invalid username or password" });
+  
+  if (authenticatedUser(username,password)) {
+    let accessToken = jwt.sign({
+        data: password
+      }, 'access', { expiresIn: 60 * 20 });
+      req.session.authorization = {
+        accessToken, username
+
+    }
+    return res.status(200).send("Customer successfully logged in");
+  } else {
+    return res.status(208).send("Incorrect Login. Check credentials");
   }
-
-  // Generate a JWT token
-  const token = jwt.sign({ username }, secretKey);
-
-  return res.status(200).json({ token });
 });
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const { isbn } = req.params;
+  const { review } = req.body;
+
+  // Find the book with the given ISBN in the books database
+  const book = books.find((book) => book.isbn === isbn);
+
+  if (!book) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+
+  // Add the review to the book
+  book.reviews.push(review);
+
+  return res.status(200).json({ message: "Book review added successfully" });
 });
 
 module.exports.authenticated = regd_users;
